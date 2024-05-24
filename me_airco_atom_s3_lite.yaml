@@ -124,7 +124,26 @@ text_sensor:
 button:
   - platform: restart
     id: restart_button
-    name: Esp restart
+    name: ESP restart
+
+#G41=Button
+binary_sensor:
+  - platform: gpio
+    id: esp_button
+    pin:
+      number: GPIO41
+      inverted: true
+      mode:
+        input: true
+        pullup: true
+    filters:
+      - delayed_off: 10ms
+    on_multi_click:
+        - timing:
+             - ON for at most 2s
+             - OFF for at least 0.2s
+          then:
+            - switch.toggle: eps32_s3_led_switch
 
 sensor:
   - platform: wifi_signal # Reports the WiFi signal strength/RSSI in dB
@@ -142,7 +161,7 @@ sensor:
     entity_category: diagnostic
     device_class: ""
 
-  - platform: uptime
+  - platform: uptime # Reports the Uptime in days
     id: esp32_uptime
     name: "Uptime"
     unit_of_measurement: days
