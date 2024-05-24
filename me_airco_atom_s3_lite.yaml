@@ -120,6 +120,12 @@ text_sensor:
     icon: mdi:new-box
     entity_category: diagnostic
 
+###  ESP restart button
+button:
+  - platform: restart
+    id: restart_button
+    name: Esp restart
+
 sensor:
   - platform: wifi_signal # Reports the WiFi signal strength/RSSI in dB
     name: Signal dB
