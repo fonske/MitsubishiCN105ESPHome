@@ -14,12 +14,13 @@ esphome:
 
 esp32:
   board: esp32-s3-devkitc-1
+## Atom S3 lite  
   framework:
     type: arduino
     version: latest
 
 light:
-#G35=RGB WS2812C-2020
+## G35=RGB WS2812C-2020
   - platform: esp32_rmt_led_strip
     name: Led
     id: led
@@ -32,18 +33,19 @@ light:
     chipset: ws2812
     restore_mode: ALWAYS_ON  #OFF?
 
+## Uart on CN105
 uart:
   id: HP_UART
   baud_rate: 2400
   tx_pin: GPIO2
   rx_pin: GPIO1
 
-# Default logging level
+## Default logging level
 logger:
   #hardware_uart: UART1 # This line can be removed for ESP32 devices
   level: INFO  
 
-# Enable Home Assistant API
+## Enable Home Assistant API
 api:
   services:
     - service: reboot
@@ -51,6 +53,19 @@ api:
         - logger.log: "Esp reboot..."
         - lambda: |-
             ESP.restart();
+    - service: set_remote_temperature
+      variables:
+        temperature: float
+      then:
+# Select between the C version and the F version
+# Uncomment just ONE of the below lines. The top receives the temperature value in C,
+# the bottom receives the value in F, converting to C here.
+        - lambda: 'id(hp).set_remote_temperature(temperature);'
+#        - lambda: 'id(hp).set_remote_temperature((temperature - 32.0) * (5.0 / 9.0));'
+    - service: use_internal_temperature
+      then:
+        - lambda: 'id(hp).set_remote_temperature(0);'
+
 #  encryption:
 #    key: "xJpzPUEla1JWNtgVhi1J5O/9zweBt7Y9xG3LX/tlq+8=" # needs to be your key
 
@@ -105,7 +120,7 @@ climate:
       fan_mode: [AUTO, QUIET, LOW, MEDIUM, HIGH]
       swing_mode: ["OFF", VERTICAL]
   
-# diagnostics
+# Diagnostics
 text_sensor:
   - platform: wifi_info
     ip_address:
@@ -120,13 +135,13 @@ text_sensor:
     icon: mdi:new-box
     entity_category: diagnostic
 
-###  ESP restart button
+# ESP restart button
 button:
   - platform: restart
     id: restart_button
     name: ESP restart
 
-#G41=Button
+# G41=Button
 binary_sensor:
   - platform: gpio
     id: esp_button
@@ -146,6 +161,22 @@ binary_sensor:
             - switch.toggle: eps32_s3_led_switch
 
 sensor:
+## use external temperature from sensor in home assistant
+## uncomment to use this function directly / or use the service in home assistant (see api services)
+#  - platform: homeassistant
+#    id: current_temp
+#    internal: true
+#    entity_id: sensor.selected_temperature_main
+#    on_value:
+#      then:
+#        - lambda: |-
+#            float temp_f = id(current_temp).state;
+#            float temp_c = (temp_f - 32.0) * (5.0 / 9.0);
+#            ESP_LOGD("custom", "Current Temp (F): %.1f, Temp (C): %.1f", temp_f, temp_c);
+#            id(hp).set_remote_temperature(temp_c);
+#    filters:
+#      - heartbeat: 10s
+
   - platform: wifi_signal # Reports the WiFi signal strength/RSSI in dB
     name: Signal dB
     id: wifi_signal_db
@@ -174,7 +205,7 @@ sensor:
     entity_category: diagnostic
 
   - platform: internal_temperature
-    name: Internal Esp temperature
+    name: Internal ESP temperature
     entity_category: diagnostic
 
 switch:
