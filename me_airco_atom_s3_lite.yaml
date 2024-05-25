@@ -35,8 +35,8 @@ light:
 uart:
   id: HP_UART
   baud_rate: 2400
-  tx_pin: GPIO1
-  rx_pin: GPIO2
+  tx_pin: GPIO2
+  rx_pin: GPIO1
 
 # Default logging level
 logger:
