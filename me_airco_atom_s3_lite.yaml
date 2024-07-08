@@ -1,6 +1,6 @@
 substitutions:
-  name: airco-woonkamer
-  friendly_name: Airco woonkamer
+  name: airco-boven
+  friendly_name: Airco boven
 
 esphome:
   name: ${name}
@@ -70,6 +70,7 @@ api:
 #    key: "xJpzPUEla1JWNtgVhi1J5O/9zweBt7Y9xG3LX/tlq+8=" # needs to be your key
 
 ota:
+  - platform: esphome
 #  password: "7a7e990eb0f3d57cbeb41e21dffa4331"
 
 wifi:
