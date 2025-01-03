@@ -1,5 +1,5 @@
 substitutions:
-  name: "esp32-hp"
+  name: "esp32-hp-test"
   friendly_name: Clim Sejour
 
 esphome:
@@ -10,6 +10,9 @@ esp32:
   board: esp32doit-devkit-v1
   framework:
     type: esp-idf     
+    #version: 5.3.0
+    #platform_version: 6.8.0
+
     #type: arduino
 
 
@@ -80,7 +83,8 @@ api:
     key: !secret encryption_key_sejour
 
 ota:  
-  password: !secret ota_pwd
+  - platform: esphome
+    password: !secret ota_pwd
 
 wifi:
   #ssid: !secret wifi_ssid
@@ -110,6 +114,7 @@ time:
 
 # this setting is for local component (code is not on github)
 external_components:
+#   - source: github://echavet/MitsubishiCN105ESPHome
  - source:
      type: local
      path: components 
@@ -247,11 +252,11 @@ climate:
     stage_sensor:
       name: stage sensor      
     remote_temperature_timeout: 15min
-    update_interval: 2s         # shouldn't be less than 1 second
-    debounce_delay : 100ms       # delay to prevent bouncing 
+    update_interval: 2500ms         # shouldn't be less than 1 second
+    debounce_delay : 120ms       # delay to prevent bouncing 
     hp_uptime_connection_sensor:
       name: ${name} HP Uptime Connection
-      update_interval: 10s
+      update_interval: 30s
     supports:
       mode: [COOL, HEAT, FAN_ONLY, DRY]
       fan_mode: [AUTO, QUIET, LOW, MEDIUM, HIGH]
@@ -259,6 +264,9 @@ climate:
     visual:
       min_temperature: 17
       max_temperature: 23
-      temperature_step: 1.0
+      temperature_step:
+        target_temperature: 0.5
+        current_temperature: 0.1
+
 
 
