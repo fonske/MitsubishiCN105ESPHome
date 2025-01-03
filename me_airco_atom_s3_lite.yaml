@@ -1,6 +1,6 @@
 substitutions:
-  name: airco-boven
-  friendly_name: Airco boven
+  name: ac-woonkamer
+  friendly_name: AC Woonkamer
 
 esphome:
   name: ${name}
@@ -71,7 +71,7 @@ api:
 
 ota:
   - platform: esphome
-#  password: "7a7e990eb0f3d57cbeb41e21dffa4331"
+    # password: !secret ota_pwd
 
 wifi:
   ssid: !secret wifi_ssid
@@ -116,7 +116,7 @@ climate:
       min_temperature: 15
       max_temperature: 31
       temperature_step:
-        target_temperature: 1
+        target_temperature: 0.5
         current_temperature: 0.1
     compressor_frequency_sensor:
       name: Compressor Frequency
@@ -133,6 +133,19 @@ climate:
       mode: [COOL, HEAT, FAN_ONLY, DRY]
       fan_mode: [AUTO, QUIET, LOW, MEDIUM, HIGH]
       swing_mode: ["OFF", VERTICAL]
+    runtime_hours_sensor:
+      name: Runtime Hours
+    kwh_sensor:
+      name: Energy Consumed
+    input_power_sensor:
+      name: Input Power
+    stage_sensor:
+      name: Stage
+    sub_mode_sensor:
+      name: Sub Mode
+    auto_sub_mode_sensor:
+      name: Auto Sub Mode
+
   
 ## Diagnostics
 text_sensor:
